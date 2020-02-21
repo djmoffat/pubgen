@@ -63,7 +63,7 @@ def add_links(bib):
         # if link == 'DOI':
         #     pdb.set_trace()
         if link.lower() in bib:
-            out_string += ' [{}]({})'.format(link.upper(),bib[link])
+            out_string += ' [[{}]]({})'.format(link.upper(),bib[link])
     # print(out_string)
     return out_string
 
