@@ -47,7 +47,7 @@ def return_journal(bib, author):
     return '{} ({}). {}. _{}_.'.format(author, bib['year'], bib['title'], bib['journal'])
 
 def return_bookchapter(bib, author):
-    return '{} ({}). {}. _{}_.'.format(author, bib['year'], bib['title'], bib['journal'])
+    return '{} ({}). {}. {} Editor. _In {}_. {}'.format(author, bib['year'], bib['title'], bib['editor'], bib['booktitle'], bib['publisher'])
 
 def return_conference(bib, author):
     return '{} ({}). _{}_. {}.'.format(author, bib['year'], bib['title'], bib['booktitle'])
@@ -64,7 +64,7 @@ def add_links(bib):
         #     pdb.set_trace()
         if link.lower() in bib:
             out_string += ' [{}]({})'.format(link.upper(),bib[link])
-    print(out_string)
+    # print(out_string)
     return out_string
 
 # def add_bibtex(bib):
@@ -80,10 +80,12 @@ def format_refs(bib_entries, ref_format):
         format_refs += '# ' + type_names[ref_type] + '\n\n'
         for bib in bib_entries:
             if bib['ENTRYTYPE'] == ref_type:
-                # line_string = '<span id="{}">'.format(bib['ID'])
+                line_string = '' #<span id="{}">'.format(bib['ID'])
                 author = format_authors(bib['author'])
                 if bib['ENTRYTYPE'] == 'article':
                     line_string = return_journal(bib, author)
+                elif bib['ENTRYTYPE'] == 'incollection':
+                    line_string = return_bookchapter(bib, author)
                 elif bib['ENTRYTYPE'] == 'inproceedings':
                     line_string = return_conference(bib, author)
                 elif bib['ENTRYTYPE'] == 'misc':
@@ -91,7 +93,7 @@ def format_refs(bib_entries, ref_format):
                 else:
                     print(bib['ENTRYTYPE'] + ' : ' + bib['title'])
                 line_string = line_string.replace('{','').replace('}','')
-                line_string = line_string.replace('\"o','&ouml;').replace('\'e','&eacute;')
+                line_string = line_string.replace('\\\"o','&ouml;').replace('\\\'e','&eacute;')
                 line_string += add_links(bib)
                 # line_string += add_bibtex(bib)
                 format_refs += line_string +'\n\n'
@@ -109,7 +111,7 @@ def main(args):
     bib_entries = sorted(bib_entries, key=lambda k: k[args.sort], reverse=True) 
     ref_string = header()
     ref_string += format_refs(bib_entries, args.reference)
-    print(ref_string)
+    # print(ref_string)
     # pdb.set_trace()
     with open(args.output,'w') as wf:
         wf.write(ref_string)
